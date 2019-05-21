@@ -17,7 +17,10 @@
 #pragma once
 
 #include "Scene.h"
+#include "Stream.h"
 // stl
+#include <stddef.h>
+#include <stdio.h>
 #include <queue>
 #include <memory>
 #include <string.h>
@@ -31,27 +34,12 @@ namespace pbrt {
     level a triangle mesh is nothing but a geometry that has a string
     with a given name, and parameters of given names and types */
   namespace syntactic {
-  
-    /*! file name and handle, to be used by tokenizer and loc */
-    struct PBRT_PARSER_INTERFACE File {
-      File(const std::string &fn): name(fn) {
-        file = fopen(fn.c_str(),"r");
-        if (!file)
-          throw std::runtime_error("could not open file '"+fn+"'");
-      }
-      void close() { fclose(file); file = NULL; }
-      virtual ~File() { 
-        if (file) fclose(file);
-      }
-      /*! get name of the file */
-      std::string getFileName() const { return name; }
 
-      friend struct Lexer;
-
-    private:
-      std::string name;
-      FILE *file;
-    };
+#if PBRT_PARSER_HAVE_BOOST
+    typedef MappedFile File;
+#else
+    typedef CFile File;
+#endif
 
     /*! struct referring to a 'loc'ation in the input stream, given by file name 
       and line number */

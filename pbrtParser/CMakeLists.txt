@@ -14,6 +14,17 @@
 ## limitations under the License.                                           ##
 ## ======================================================================== ##
 
+find_package(Boost COMPONENTS iostreams system)
+
+if(Boost_FOUND)
+  if (WIN32)
+    add_definitions(-DBOOST_ALL_NO_LIB)
+    set(Boost_USE_STATIC_LIBS ON)
+  endif()
+
+  include_directories(Boost_INCLUDE_DIRS)
+endif()
+
 set(SOURCES
   # the 'public' header files
   include/pbrtParser/math.h
@@ -45,12 +56,24 @@ add_library(pbrtParser SHARED
 set_target_properties(pbrtParser PROPERTIES VERSION ${pbrtParser_VERSION})
 set_target_properties(pbrtParser PROPERTIES CXX_VISIBILITY_PRESET hidden)
 target_compile_definitions(pbrtParser PUBLIC PBRT_PARSER_DLL_INTERFACE)
+if(Boost_FOUND)
+  target_compile_definitions(pbrtParser PUBLIC PBRT_PARSER_HAVE_BOOST=1)
+  target_link_libraries(pbrtParser ${Boost_LIBRARIES})
+else()
+  target_compile_definitions(pbrtParser PUBLIC PBRT_PARSER_HAVE_BOOST=0)
+endif()
 
 # ------------------------------------------------------------------
 add_library(pbrtParser_static STATIC
   ${SOURCES}
   )
 set_target_properties(pbrtParser_static PROPERTIES VERSION ${pbrtParser_VERSION})
+if(Boost_FOUND)
+  target_compile_definitions(pbrtParser_static PUBLIC PBRT_PARSER_HAVE_BOOST=1)
+  target_link_libraries(pbrtParser ${Boost_LIBRARIES})
+else()
+  target_compile_definitions(pbrtParser_static PUBLIC PBRT_PARSER_HAVE_BOOST=0)
+endif()
 
 # ------------------------------------------------------------------
 install(TARGETS pbrtParser DESTINATION lib)
