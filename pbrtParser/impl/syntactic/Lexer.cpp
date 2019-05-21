@@ -33,31 +33,12 @@ namespace pbrt {
 
     inline void Lexer::unget_char(int c)
     {
-      if (peekedChar >= 0) 
-        throw std::runtime_error("can't push back more than one char ...");
-      peekedChar = c;
+      file->ungetc(c);
     }
 
     inline int Lexer::get_char() 
     {
-      if (peekedChar >= 0) {
-        int c = peekedChar;
-        peekedChar = -1;
-        return c;
-      }
-        
-      if (!file->file || feof(file->file)) {
-        return -1;
-      }
-        
-      int c = fgetc(file->file);
-      if (c == '\n') {
-        loc.line++;
-        loc.col = 0;
-      } else {
-        loc.col++;
-      }
-      return c;
+      return file->getc();
     };
       
     inline bool Lexer::isWhite(const char c)
@@ -76,6 +57,8 @@ namespace pbrt {
       // skip all white space and comments
       int c;
 
+      Stream<File> stream(*file);
+
       // Loc startLoc = loc;
       // skip all whitespaces and comments
       while (1) {
@@ -90,11 +73,7 @@ namespace pbrt {
         if (c == '#') {
           // startLoc = loc;
           // Loc lastLoc = loc;
-          while (c != '\n') {
-            // lastLoc = loc;
-            c = get_char();
-            if (c < 0) return Token();
-          }
+          if (!stream.skip_to('\n')) return Token();
           continue;
         }
         break;
