@@ -103,7 +103,6 @@ namespace pbrt {
 
       inline void unget_char(int c);
       inline int get_char();
-      inline bool isWhite(const char c);
       inline bool isSpecial(const char c);
 
       std::shared_ptr<File> file;

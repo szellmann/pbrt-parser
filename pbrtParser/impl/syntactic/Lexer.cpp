@@ -41,7 +41,7 @@ namespace pbrt {
       return file->getc();
     };
       
-    inline bool Lexer::isWhite(const char c)
+    inline bool isWhite(const char c)
     {
       return (c==' ' || c=='\n' || c=='\t' || c=='\r');
       // return strchr(" \t\n\r",c)!=nullptr;
@@ -54,30 +54,30 @@ namespace pbrt {
 
     Token Lexer::next() 
     {
-      // skip all white space and comments
-      int c;
-
       Stream<File> stream(*file);
 
       // Loc startLoc = loc;
       // skip all whitespaces and comments
-      while (1) {
-        c = get_char();
+      bool comment = false;
+      int c = stream.skip_if(
+        [&comment](int c) {
+          if (c == '#') {
+            comment = true;
+            return true;
+          }
 
-        if (c < 0) { file->close(); return Token(); }
-          
-        if (isWhite(c)) {
-          continue;
-        }
-          
-        if (c == '#') {
-          // startLoc = loc;
-          // Loc lastLoc = loc;
-          if (!stream.skip_to('\n')) return Token();
-          continue;
-        }
-        break;
-      }
+          if (comment) {
+            if (c == '\n') {
+              comment = false;
+            }
+            return true;
+          }
+
+          return isWhite(c);
+        });
+
+      if (c < 0) // EOF found
+        return Token();
 
       std::string s; s.reserve(100);
       std::stringstream ss(s);

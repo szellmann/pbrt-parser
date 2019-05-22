@@ -162,7 +162,7 @@ namespace pbrt {
         }
 
         template <class Func>
-        bool skip_if(Func skip_func) {
+        int skip_if(Func skip_func) {
           int c = file_.getc();
 
           while (skip_func(c)) {
@@ -171,9 +171,9 @@ namespace pbrt {
               return false;
           }
 
-          return true;
+          return c;
         }
-        bool skip_to(char to) {
+        int skip_to(char to) {
           return skip_if([to](int c) { return c != to; });
         }
     private:
