@@ -22,6 +22,10 @@ set(pbrtParser_VERSION_MAJOR 2)
 set(pbrtParser_VERSION_MINOR 1)
 set(pbrtParser_VERSION_PATCH 3)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+include(PbrtParserAddTarget)
+
 if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
 
@@ -52,7 +56,19 @@ include_directories(${PROJECT_SOURCE_DIR}/pbrtParser/include)
 
 #add_subdirectory(internal/ospcommon EXCLUDE_FROM_ALL)
 
+option(BUILD_SHARED_LIBS "Build all libraries as shared libraries instead of static" ON)
+
 set(pbrtParser_VERSION "${pbrtParser_VERSION_MAJOR}.${pbrtParser_VERSION_MINOR}.${pbrtParser_VERSION_PATCH}")
+
+set(pbrtParser_SHARED_LIB_POSTFIX_DEBUG "-gd" CACHE STRING "Postfix for shared libraries (Debug)")
+set(pbrtParser_SHARED_LIB_POSTFIX_RELEASE "" CACHE STRING "Postfix for shared libraries (Release)")
+set(pbrtParser_SHARED_LIB_POSTFIX_MINSIZEREL "-m" CACHE STRING "Postfix for shared libraries (MinSizeRel)")
+set(pbrtParser_SHARED_LIB_POSTFIX_RELWITHDEBINFO "-d" CACHE STRING "Postfix for shared libraries (RelWithDebInfo")
+
+set(pbrtParser_STATIC_LIB_POSTFIX_DEBUG "-sgd" CACHE STRING "Postfix for static libraries (Debug)")
+set(pbrtParser_STATIC_LIB_POSTFIX_RELEASE "-s" CACHE STRING "Postfix for static libraries (Release)")
+set(pbrtParser_STATIC_LIB_POSTFIX_MINSIZEREL "-sm" CACHE STRING "Postfix for static libraries (MinSizeRel)")
+set(pbrtParser_STATIC_LIB_POSTFIX_RELWITHDEBINFO "-sd" CACHE STRING "Postfix for static libraries (RelWithDebInfo")
 
 # syntactic-only parser
 #add_subdirectory(pbrtParser/syntactic)

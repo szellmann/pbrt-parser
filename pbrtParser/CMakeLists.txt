@@ -39,22 +39,11 @@ set(SOURCES
   )
 
 # ------------------------------------------------------------------
-add_library(pbrtParser SHARED
-  ${SOURCES}
-  )
-set_target_properties(pbrtParser PROPERTIES VERSION ${pbrtParser_VERSION})
-set_target_properties(pbrtParser PROPERTIES CXX_VISIBILITY_PRESET hidden)
-target_compile_definitions(pbrtParser PUBLIC PBRT_PARSER_DLL_INTERFACE)
+pbrt_parser_add_library(pbrtParser ${SOURCES})
 
-# ------------------------------------------------------------------
-add_library(pbrtParser_static STATIC
-  ${SOURCES}
-  )
-set_target_properties(pbrtParser_static PROPERTIES VERSION ${pbrtParser_VERSION})
 
 # ------------------------------------------------------------------
 install(TARGETS pbrtParser DESTINATION lib)
-install(TARGETS pbrtParser_static DESTINATION lib)
 
 install(FILES include/pbrtParser/math.h DESTINATION include/pbrtParser)
 install(FILES include/pbrtParser/Scene.h DESTINATION include/pbrtParser)
