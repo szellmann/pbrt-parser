@@ -79,4 +79,5 @@ add_subdirectory(pbrtParser)
 #add_subdirectory(amalgamation)
 
 add_subdirectory(apps)
+add_subdirectory(test/unittests)
 
